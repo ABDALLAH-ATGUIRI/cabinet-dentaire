@@ -45,7 +45,7 @@ class userController
 
     public function read()
     {
-        
+
 
         $post = new Connexion();
 
@@ -55,12 +55,11 @@ class userController
 
         if ($num > 0) {
 
-            $posts_arr = array();
             while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
 
                 extract($row);
 
-                $post_item[] = array(
+                $post_item = array(
                     'nome' => $nome,
                     'prenom' => $prenom,
                     'email' => $email,
@@ -69,8 +68,8 @@ class userController
                     'id' => $id
                 );
             }
-            array_push($posts_arr, $post_item);
-            echo json_encode($posts_arr);
+  
+            echo json_encode($post_item);
         } else {
             echo json_encode(
                 array('message' => 'No Posts Found')
@@ -80,23 +79,49 @@ class userController
 
     public function read_single()
     {
-       
 
         $post = new Connexion();
-        $post->id = isset($_POST['id']) ? $_POST['id'] : die();
+        $post->id = isset($_POST['id']) ? $_POST['id'] = md5($_POST['id']) : die();
 
         $post->read_single();
 
         $post_arr = array(
+            'Id_user' => $post->id,
             'nome' => $post->nome,
             'prenom' => $post->prenom,
             'email' => $post->email,
             'phone' => $post->phone,
             'naissance' => $post->naissance,
-            'id' => $post->id
         );
 
 
         echo json_encode($post_arr);
     }
+
+    // public function rdv()
+    // {
+    //     $post = new Connexion();
+    //     $data = json_decode(file_get_contents("php://input"));
+    //     $post->date = $data->date;
+    //     $post->sujet = $data->sujet;
+    //     $post->id     = $data->id;
+    //     $post->time = $data->time;
+    //     if (
+    //         ($post->date) &&
+    //         ($post->sujet) &&
+    //         ($post->id) &&
+    //         ($post->time)
+
+    //     ) {
+    //         if ($id = $post->create()) {
+    //             echo json_encode(
+    //                 array('id' => $id)
+    //             );
+    //         } else {
+    //             echo json_encode(
+    //                 array('message' => 'Post Not Created')
+    //             );
+    //         }
+    //     }
+    // }
 }

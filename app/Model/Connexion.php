@@ -15,6 +15,7 @@ class Connexion
     public $email;
     public $naissance;
     public $id;
+    private $code ;
 
     public function __construct()
     {
@@ -39,11 +40,11 @@ class Connexion
     public function read_single()
     {
 
-        $query = 'SELECT *  FROM ' . $this->table . ' WHERE id = ? LIMIT 0,1 ';
+        $query = "SELECT *  FROM $this->table  WHERE id = ? LIMIT 0,1 ";
 
         $stmt = $this->conn->prepare($query);
 
-        $stmt->bindParam(1, $this->id);
+        $stmt->bindParam(1,$this->id);
 
         $stmt->execute();
 
@@ -74,16 +75,16 @@ class Connexion
         $this->email = htmlspecialchars(strip_tags($this->email));
         $this->naissance = htmlspecialchars(strip_tags($this->naissance));
         $this->id = strtoupper($this->nome) . '-' . rand(10000, 99999);
-
+        $this->code = md5($this->id);
         $stmt->bindParam(':nome', $this->nome);
         $stmt->bindParam(':prenom', $this->prenom);
         $stmt->bindParam(':phone', $this->phone);
         $stmt->bindParam(':email', $this->email);
         $stmt->bindParam(':naissance', $this->naissance);
-        $stmt->bindParam(':id', $this->id);
+        $stmt->bindParam(':id',  $this->code);
 
         if ($stmt->execute()) {
-            return $this->id;
+            return  $this->id ;;
         }else{
             printf("Error: %s.\n", $stmt->error);
             return false;
